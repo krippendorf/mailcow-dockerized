@@ -207,7 +207,7 @@ services:
             - dovecot
 
     postfix-mailcow:
-      image: mailcow/postfix:1.1
+      image: mailcow/postfix:1.6
       build: ./data/Dockerfiles/postfix
       depends_on:
         unbound-mailcow:
@@ -348,7 +348,20 @@ services:
       volumes:
         - /var/run/docker.sock:/var/run/docker.sock:ro
         - /lib/modules:/lib/modules:ro
-
+    logger-mailcow:
+      image: mailcow/logger:1.1
+      build: ./data/Dockerfiles/logger
+      restart: always
+      dns:
+        - 172.22.1.254
+      dns_search: mailcow-network
+      volumes:
+              - ./data/conf/logging/syslog-ng.conf:/etc/syslog-ng/syslog-ng.conf
+      networks:
+        mailcow-network:
+          ipv4_address: 172.22.1.200
+          aliases:
+            - logger-mailcow
 networks:
   mailcow-network:
     driver: bridge

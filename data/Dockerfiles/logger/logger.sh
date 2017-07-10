@@ -1,0 +1,2 @@
+echo "logger up"
+cat -
